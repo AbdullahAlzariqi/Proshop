@@ -6,12 +6,13 @@ import {
   Route,
   RouterProvider,
 } from "react-router-dom";
-
+import { Provider } from 'react-redux';
 // import 'bootstrap/dist/css/bootstrap.min.css'
 import './assets/styles/bootstrap.custom.css'
 import App from './App.jsx'
 import { HomeScreen, ProductScreen } from './components'
 import './assets/styles/index.css'
+import store from './store.js';
 
 
 const router = createBrowserRouter(
@@ -24,6 +25,8 @@ const router = createBrowserRouter(
 )
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <RouterProvider router={router} />
+  <Provider store={store}>
+    <RouterProvider router={router} />
+  </Provider>
 
 )
