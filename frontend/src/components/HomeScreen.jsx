@@ -1,9 +1,10 @@
 
 import { Row, Col } from 'react-bootstrap'
 import { useGetProductsQuery } from '../slices/productsApiSlice'
+import { Product } from '../components'
 const HomeScreen = () => {
-    const { data: products, isLoading, isError } = useGetProductsQuery();
-    console.log(products)
+    const { data: products, isLoading, error } = useGetProductsQuery();
+    console.log(products, error)
 
 
 
@@ -11,7 +12,7 @@ const HomeScreen = () => {
 
     return (
         <>
-            <Row>
+            {isLoading ? (<h2>...loading</h2>) : error ? (<div>{error?.data?.message || error?.error}</div>) : (<><h1>Latest Products</h1><Row>
                 {
                     products.map((product) => {
                         return <Col key={product._id} sm={12} md={6} lg={4} xl={3}>
@@ -19,7 +20,8 @@ const HomeScreen = () => {
                         </Col>
                     })
                 }
-            </Row>
+            </Row></>)}
+
         </>
     )
 }
