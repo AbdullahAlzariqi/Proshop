@@ -7,7 +7,10 @@ export default defineConfig({
   server: {
     // proxy requests prefixed '/api'
     proxy: {
-      '/api/products': 'http://localhost:5000',
+      '/api/products': {
+        target: 'http://localhost:5000',
+        changeOrigin: true
+      },
       '/uploads': 'http://localhost:5000',
     },
   },
