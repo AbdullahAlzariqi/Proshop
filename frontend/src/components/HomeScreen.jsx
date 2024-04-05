@@ -4,7 +4,6 @@ import { useGetProductsQuery } from '../slices/productsApiSlice'
 import { Product, Loader, Message } from '../components'
 const HomeScreen = () => {
     const { data: products, isLoading, error } = useGetProductsQuery();
-    console.log(products, error)
 
 
 
