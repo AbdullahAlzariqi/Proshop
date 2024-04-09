@@ -12,7 +12,7 @@ const orderSchema = new mongoose.Schema({
                 type: String,
                 required: true
             },
-            quantity: {
+            qty: {
                 type: Number,
                 required: true
             },
@@ -21,7 +21,7 @@ const orderSchema = new mongoose.Schema({
                 type: Number,
                 required: true
             },
-            prodcut: {
+            product: {
                 type: mongoose.Schema.Types.ObjectId,
                 required: true,
                 ref: "Product"
