@@ -10,16 +10,15 @@ const OrderScreen = () => {
 
     const [stripePromise, setStripePromise] = useState(null);
     const { data: stripeObject, isLoading: loads } = useReceiveKeyQuery();
+    if (!loads) {
+        const key = stripeObject.pubishableKey;
+        console.log(key);
+    }
 
 
     useEffect(() => {
 
-        if (!loads) {
-            const key = stripeObject.pubishableKey;
-            setStripePromise(loadStripe(key))
-            console.log(key);
-        }
-    }, [loads])
+    }, [])
 
     const { id: orderId } = useParams();
     const { data: order, refetch, isLoading, error } = useGetOrderDetailsQuery(orderId)// Refecth will ensure that we do not have stale data
