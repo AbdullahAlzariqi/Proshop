@@ -1,9 +1,25 @@
+import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Row, Col, ListGroup, Image, Button, Card } from 'react-bootstrap';
 import { Message, Loader } from '../components';
+import { useReceiveKeyQuery } from '../slices/checkoutApiSlice'
 import { useGetOrderDetailsQuery } from '../slices/ordersApiSlice'
+import { loadStripe } from '@stripe/stripe-js';
 
 const OrderScreen = () => {
+
+    const [stripePromise, setStripePromise] = useState(null);
+    const { data: stripeObject, isLoading: loads } = useReceiveKeyQuery();
+
+
+    useEffect(() => {
+
+        if (!loads) {
+            const key = stripeObject.pubishableKey;
+            setStripePromise(loadStripe(key))
+            console.log(key);
+        }
+    }, [loads])
 
     const { id: orderId } = useParams();
     const { data: order, refetch, isLoading, error } = useGetOrderDetailsQuery(orderId)// Refecth will ensure that we do not have stale data
