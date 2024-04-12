@@ -10,7 +10,7 @@ import { Provider } from 'react-redux';
 // import 'bootstrap/dist/css/bootstrap.min.css'
 import './assets/styles/bootstrap.custom.css'
 import App from './App.jsx'
-import { HomeScreen, ProductScreen, PrivateRoutes } from './components'
+import { HomeScreen, ProductScreen, PrivateRoutes, AdminRoutes } from './components'
 import CartScreen from './screens/cartScreen.jsx';
 import './assets/styles/index.css'
 import store from './store.js';
@@ -20,6 +20,8 @@ import ShippingScreen from './screens/ShippingScreen.jsx';
 import PaymentScreen from './screens/PaymentScreen.jsx';
 import PlaceOrderScreen from './screens/PlaceOrderScreen.jsx';
 import OrderScreen from './screens/OrderScreen.jsx';
+import ProfileScreen from './screens/ProfileScreen.jsx';
+import OrderListScreen from './screens/OrderListScreen.jsx';
 
 
 const router = createBrowserRouter(
@@ -36,6 +38,12 @@ const router = createBrowserRouter(
         <Route path="/payment" element={<PaymentScreen />}></Route>
         <Route path="/placeorder" element={<PlaceOrderScreen />}></Route>
         <Route path="/orders/:id" element={<OrderScreen />}></Route>
+        <Route path="/profile" element={<ProfileScreen />}></Route>
+
+      </Route>
+
+      <Route path="" element={<AdminRoutes />}>
+        <Route path="/admin/orderlist" element={<OrderListScreen />}></Route>
 
       </Route>
     </Route>

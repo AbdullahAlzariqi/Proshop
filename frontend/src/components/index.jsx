@@ -6,6 +6,7 @@ export { default as Rating } from './Rating';
 export { default as Message } from './Message';
 export { default as Loader } from './Loader';
 export { default as PrivateRoutes } from './PrivateRoutes';
+export { default as AdminRoutes } from './AdminRoutes';
 export { default as HomeScreen } from './HomeScreen';
 export { default as FormContainer } from './FormContainer';
 export { default as CheckoutSteps } from './CheckoutSteps';
