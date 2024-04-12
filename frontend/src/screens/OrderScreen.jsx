@@ -1,28 +1,68 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Row, Col, ListGroup, Image, Button, Card } from 'react-bootstrap';
-import { Message, Loader } from '../components';
-import { useReceiveKeyQuery } from '../slices/checkoutApiSlice'
+import { Message, Loader, CheckoutForm } from '../components';
 import { useGetOrderDetailsQuery } from '../slices/ordersApiSlice'
 import { loadStripe } from '@stripe/stripe-js';
+import { Elements } from '@stripe/react-stripe-js'
+import axios from 'axios'
 
 const OrderScreen = () => {
-
-    const [stripePromise, setStripePromise] = useState(null);
-    const { data: stripeObject, isLoading: loads } = useReceiveKeyQuery();
-    if (!loads) {
-        const key = stripeObject.pubishableKey;
-        console.log(key);
+    const { id: orderId } = useParams();
+    const { data: order, refetch, isLoading, error } = useGetOrderDetailsQuery(orderId)// Refecth will ensure that we do not have stale data
+    if (!isLoading) {
+        let price = order.totalPrice;
     }
+    const [stripePromise, setStripePromise] = useState(null);
+    const [clientSecret, setClientSecret] = useState("");
+
+    // const { data: stripeObject, isLoading: loads } = useReceiveKeyQuery();
+    // if (!loads) {
+    //     const key = stripeObject.pubishableKey;
+    // }
+    const sss = async (url) => {
+        const x = await axios.get(url)
+        return x
+    }
+    const postRequest = async (url) => {
+        const x = await axios.post(url)
+        return x
+    }
+
+
+
+    const handlePost = async () => {
+        const res = await axios.post('/api/payment/create-payment-intent', { "totalPrice": price })
+        console.log(res, " is res");
+    };
 
 
     useEffect(() => {
 
+        try {
+            postRequest("/api/payment/create-payment-intent").then(async (r) => {
+                const { clientSecret } = await r.data;
+                setClientSecret(clientSecret)
+            })
+        } catch (e) {
+            return e.message
+        }
+
+
     }, [])
 
-    const { id: orderId } = useParams();
-    const { data: order, refetch, isLoading, error } = useGetOrderDetailsQuery(orderId)// Refecth will ensure that we do not have stale data
-    console.log(order);
+    useEffect(() => {
+
+        sss('/api/payment/config').then((res) => {
+            const key = res.data.pubishableKey
+            setStripePromise(loadStripe(key))
+        });
+
+
+    }, [])
+
+
+
     return isLoading ? (<Loader />) : error ? <Message variant='danger'>error</Message> : <>
         <h1>Order ID: {order._id}</h1>
         <Row>
@@ -116,6 +156,11 @@ const OrderScreen = () => {
 
                     </ListGroup>
                 </Card>
+                {stripePromise && clientSecret && !order.isPaid && (
+                    <Elements stripe={stripePromise} options={{ clientSecret }}>
+                        <CheckoutForm />
+                    </Elements>
+                )}
             </Col>
         </Row>
     </>;

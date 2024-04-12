@@ -9,3 +9,4 @@ export { default as PrivateRoutes } from './PrivateRoutes';
 export { default as HomeScreen } from './HomeScreen';
 export { default as FormContainer } from './FormContainer';
 export { default as CheckoutSteps } from './CheckoutSteps';
+export { default as CheckoutForm } from './CheckoutForm';

@@ -22,7 +22,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 //Stripe Configuration 
-const stripeConfig = stripe(process.env.STRIPE_SECRET_KEY, {
+const stripeConfig = new stripe(process.env.STRIPE_SECRET_KEY, {
     apiVersion: "2022-08-01"
 })
 
@@ -38,13 +38,31 @@ app.get('/', (req, res) => {
 app.use('/api/products', productRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/orders', orderRoutes);
-app.get("/api/config", (req, res) => {
+app.get("/api/payment/config", (req, res) => {
     res.send({
         pubishableKey: process.env.STRIPE_PUBLISHABLEID
     })
 });
-app.post("/api/create-payment-intent", async (req, res) => {
 
+
+app.post("/api/payment/create-payment-intent", async (req, res) => {
+    try {
+        const paymentIntent = await stripeConfig.paymentIntents.create({
+            currency: 'eur',
+            amount: 200,
+            automatic_payment_methods: {
+                enabled: true
+            }
+        });
+
+        res.send({ clientSecret: paymentIntent.client_secret })
+    } catch (e) {
+        return res.status(400).send({
+            error: {
+                message: e.message
+            }
+        })
+    }
 })
 app.use(notFound);
 app.use(errorHandler);

@@ -8,7 +8,7 @@ const errorHandler = (err, req, res, next) => {
     let statusCode = res.statusCode === 200 ? 500 : res.statusCode;
     let message = err.message
 
-    if (err.name = 'CaseError' && err.kind === 'ObjectId') {
+    if (err.name === 'CaseError' && err.kind === 'ObjectId') {
         message = 'Resource not found';
         statusCode = 404
     }
