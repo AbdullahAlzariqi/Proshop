@@ -24,7 +24,6 @@ const Header = () => {
 
         } catch (err) {
             toast.error(err?.data?.message || err.error)
-            console.log(err?.data?.message || err.error);
         }
     }
 
@@ -78,7 +77,7 @@ const Header = () => {
                                             Users
                                         </NavDropdown.Item>
                                     </LinkContainer>
-                                    <LinkContainer to='/admin/productList'>
+                                    <LinkContainer to='/admin/productlist'>
                                         <NavDropdown.Item>
                                             Products
                                         </NavDropdown.Item>

@@ -40,13 +40,11 @@ const RegisterScreen = () => {
         } else {
             try {
                 const res = await register({ name, email, password }).unwrap();
-                console.log(res);
                 dispatch(setCredentials({ ...res }))
                 navigate(redirect);
                 toast.success('You signed Up in successfully!')
             } catch (err) {
                 toast.error(err?.data?.message || err.error)
-                console.log(err?.data?.message || err.error);
             }
         }
 

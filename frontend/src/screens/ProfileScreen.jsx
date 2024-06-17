@@ -34,18 +34,15 @@ const ProfileScreen = () => {
         e.preventDefault();
         if (password !== confirmPassword) {
             toast.error("Password Do not Match")
-            console.log('Password error');
         } else {
             try {
                 const res = await updateProfile({
                     _id: userInfo._id, name, email, password
                 }).unwrap();
                 dispatch(setCredentials(res));
-                console.log('SUBMITTED');
                 toast.success('profile was updated Successfully')
             } catch (e) {
                 toast.error(e?.data?.message || e?.message || e?.errpr)
-                console.log('Error ', e);
             }
         }
 

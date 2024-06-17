@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { Row, Col, ListGroup, Image, Button, Card } from 'react-bootstrap';
+import { Row, Col, ListGroup, Image, Button, Card, ListGroupItem } from 'react-bootstrap';
 import { Message, Loader, CheckoutForm } from '../components';
-import { useGetOrderDetailsQuery } from '../slices/ordersApiSlice'
+import { useSelector } from 'react-redux';
+import { useGetOrderDetailsQuery, useDeliverOrderMutation } from '../slices/ordersApiSlice'
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js'
+import { toast } from 'react-toastify';
 import axios from 'axios'
 
 const OrderScreen = () => {
@@ -15,6 +17,9 @@ const OrderScreen = () => {
     }
     const [stripePromise, setStripePromise] = useState(null);
     const [clientSecret, setClientSecret] = useState("");
+
+    const [deliverOrder, { isLoading: loadingDeliver }] = useDeliverOrderMutation();
+    const { userInfo } = useSelector((state) => state.auth);
 
     // const { data: stripeObject, isLoading: loads } = useReceiveKeyQuery();
     // if (!loads) {
@@ -33,7 +38,6 @@ const OrderScreen = () => {
 
     const handlePost = async () => {
         const res = await axios.post('/api/payment/create-payment-intent', { "totalPrice": price })
-        console.log(res, " is res");
     };
 
 
@@ -61,6 +65,15 @@ const OrderScreen = () => {
 
     }, [])
 
+    const deliverOrderHandler = async () => {
+        try {
+            await deliverOrder(orderId);
+            refetch();
+            toast.success('Order Delivered')
+        } catch (e) {
+            toast.error(err?.data?.message || err.message)
+        }
+    }
 
 
     return isLoading ? (<Loader />) : error ? <Message variant='danger'>error</Message> : <>
@@ -152,8 +165,11 @@ const OrderScreen = () => {
                             </Row>
                         </ListGroup.Item>
                         {/* PAY ORDER PLACEHODLER */}
-                        {/* MARK AS DELIVERED */}
+                        {loadingDeliver && <Loader />}
+                        {userInfo && userInfo.isAdmin && order.isPaid && !order.isDelivered && (<ListGroupItem>
 
+                            <Button type="button" className="btn btn-block" onClick={deliverOrderHandler}>Mark as Delivered</Button>
+                        </ListGroupItem>)}
                     </ListGroup>
                 </Card>
                 {stripePromise && clientSecret && !order.isPaid && (

@@ -33,13 +33,11 @@ const LoginScreen = () => {
         e.preventDefault();
         try {
             const res = await login({ email, password }).unwrap();
-            console.log(res);
             dispatch(setCredentials({ ...res }))
             navigate(redirect);
             toast.success('You logged in successfully!')
         } catch (err) {
             toast.error(err?.data?.message || err.error)
-            console.log(err?.data?.message || err.error);
         }
     }
     return (
