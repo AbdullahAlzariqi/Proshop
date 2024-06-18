@@ -12,6 +12,7 @@ import axios from 'axios'
 const OrderScreen = () => {
     const { id: orderId } = useParams();
     const { data: order, refetch, isLoading, error } = useGetOrderDetailsQuery(orderId)// Refecth will ensure that we do not have stale data
+    console.log(order);
     if (!isLoading) {
         let price = order.totalPrice;
     }

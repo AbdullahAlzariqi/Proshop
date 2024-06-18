@@ -1,3 +1,5 @@
+
+
 import { PaymentElement } from "@stripe/react-stripe-js";
 import { useState } from "react";
 import { useStripe, useElements } from "@stripe/react-stripe-js";
@@ -8,12 +10,11 @@ export default function CheckoutForm() {
     const stripe = useStripe();
     const elements = useElements();
     const { id } = useParams();
+
     const putRequest = async () => {
-
         const res = await axios.put(`/api/orders/${id}/pay`);
-        return res
-    }
-
+        return res;
+    };
 
     const [message, setMessage] = useState(null);
     const [isProcessing, setIsProcessing] = useState(false);
@@ -29,23 +30,26 @@ export default function CheckoutForm() {
 
         setIsProcessing(true);
 
-
-        const { error } = await stripe.confirmPayment({
+        const { error, paymentIntent } = await stripe.confirmPayment({
             elements,
-            confirmParams: {
-                // Make sure to change this to your payment completion page
-                return_url: `${window.location.origin}/`,
-            },
-        }).then(({ paymentIntent }) => {
-            if (paymentIntent.status === "succeeded")
-                putRequest();
+            // confirmParams: {
+            //     return_url: `${window.location.origin}/`,
+            // },
+            redirect: 'if_required'
+        });
 
-        })
-
-        if (error.type === "card_error" || error.type === "validation_error") {
-            setMessage(error.message);
+        if (error) {
+            if (error.type === "card_error" || error.type === "validation_error") {
+                setMessage(error.message);
+            } else {
+                setMessage("An unexpected error occurred.");
+            }
+        } else if (paymentIntent && paymentIntent.status === "succeeded") {
+            await putRequest();
+            console.log('succeeded');
+            setMessage("Payment succeeded!");
         } else {
-            setMessage("An unexpected error occured.");
+            setMessage("Payment failed or was not completed.");
         }
 
         setIsProcessing(false);
@@ -56,7 +60,7 @@ export default function CheckoutForm() {
             <PaymentElement id="payment-element" />
             <button disabled={isProcessing || !stripe || !elements} id="submit">
                 <span id="button-text">
-                    {isProcessing ? "Processing ... " : "Pay now"}
+                    {isProcessing ? "Processing..." : "Pay now"}
                 </span>
             </button>
             {/* Show any error or success messages */}
