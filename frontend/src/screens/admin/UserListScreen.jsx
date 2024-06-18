@@ -1,6 +1,6 @@
 import { LinkContainer } from 'react-router-bootstrap';
 import { Table, Button, Row, Col } from 'react-bootstrap';
-import { FaTimes, FaTrash, FaEdit, FaCheck, FaPlus } from 'react-icons/fa';
+import { FaTimes, FaTrash, FaEdit, FaCheck } from 'react-icons/fa';
 import { Message, Loader } from '../../components'
 import { useGetUsersQuery, useDeleteUserMutation } from '../../slices/usersApiSlice';
 import { toast } from 'react-toastify';
@@ -25,10 +25,6 @@ const UserListScreen = () => {
     };
 
 
-    const handleCreateUser = () => {
-        console.log('delete');
-    };
-
 
 
     return (
@@ -39,7 +35,6 @@ const UserListScreen = () => {
                         <h1>Users</h1>
                     </Col>
                     <Col className="text-end">
-                        <Button className="btn-sm my-3 " onClick={handleCreateUser}><FaPlus className="my-1"></FaPlus> Create User</Button>
                     </Col>
                 </Row>
                 {/* {newProductLoading && <div> <Loader></Loader></div>*/}

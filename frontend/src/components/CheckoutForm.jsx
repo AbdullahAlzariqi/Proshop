@@ -36,6 +36,7 @@ export default function CheckoutForm() {
             //     return_url: `${window.location.origin}/`,
             // },
             redirect: 'if_required'
+
         });
 
         if (error) {
@@ -45,8 +46,8 @@ export default function CheckoutForm() {
                 setMessage("An unexpected error occurred.");
             }
         } else if (paymentIntent && paymentIntent.status === "succeeded") {
+            console.log('put request');
             await putRequest();
-            console.log('succeeded');
             setMessage("Payment succeeded!");
         } else {
             setMessage("Payment failed or was not completed.");

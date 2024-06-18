@@ -4,7 +4,7 @@ import { Row, Col, ListGroup, Image, Button, Card, ListGroupItem } from 'react-b
 import { Message, Loader, CheckoutForm } from '../components';
 import { useSelector } from 'react-redux';
 import { useGetOrderDetailsQuery, useDeliverOrderMutation } from '../slices/ordersApiSlice'
-import { loadStripe } from '@stripe/stripe-js';
+import { loadStripe } from '@stripe/stripe-js/pure';
 import { Elements } from '@stripe/react-stripe-js'
 import { toast } from 'react-toastify';
 import axios from 'axios'
@@ -12,7 +12,6 @@ import axios from 'axios'
 const OrderScreen = () => {
     const { id: orderId } = useParams();
     const { data: order, refetch, isLoading, error } = useGetOrderDetailsQuery(orderId)// Refecth will ensure that we do not have stale data
-    console.log(order);
     if (!isLoading) {
         let price = order.totalPrice;
     }
@@ -26,7 +25,9 @@ const OrderScreen = () => {
     // if (!loads) {
     //     const key = stripeObject.pubishableKey;
     // }
-    const sss = async (url) => {
+
+
+    const getRequest = async (url) => {
         const x = await axios.get(url)
         return x
     }
@@ -48,7 +49,14 @@ const OrderScreen = () => {
             postRequest("/api/payment/create-payment-intent").then(async (r) => {
                 const { clientSecret } = await r.data;
                 setClientSecret(clientSecret)
+                getRequest('/api/payment/config').then((res) => {
+                    const key = res.data.pubishableKey
+                    setStripePromise(loadStripe(key))
+                });
             })
+
+
+
         } catch (e) {
             return e.message
         }
@@ -56,15 +64,7 @@ const OrderScreen = () => {
 
     }, [])
 
-    useEffect(() => {
 
-        sss('/api/payment/config').then((res) => {
-            const key = res.data.pubishableKey
-            setStripePromise(loadStripe(key))
-        });
-
-
-    }, [])
 
     const deliverOrderHandler = async () => {
         try {

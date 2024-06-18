@@ -2,6 +2,7 @@ import { Badge, Navbar, Nav, Container, NavDropdown } from 'react-bootstrap'
 import { FaShoppingCart, FaUser } from 'react-icons/fa'
 import { LinkContainer } from 'react-router-bootstrap'
 import { useSelector, useDispatch } from 'react-redux'
+import SearchBox from './SearchBox.jsx'
 import logo from '../assets/logo.png';
 import { useNavigate } from 'react-router-dom';
 import { useLogoutMutation } from '../slices/usersApiSlice.js';
@@ -41,6 +42,7 @@ const Header = () => {
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Nav className='ms-auto'>
+                            <SearchBox></SearchBox>
                             <LinkContainer to="/cart">
                                 <Nav.Link href="/cart"><FaShoppingCart /> Cart{cartItems.length > 0 && (
                                     <Badge pill bg='success' style={{ marginLeft: '5px' }}>

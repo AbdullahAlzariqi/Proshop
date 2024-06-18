@@ -31,9 +31,7 @@ const stripeConfig = new stripe(process.env.STRIPE_SECRET_KEY, {
 //cookie parser
 app.use(cookieParser())
 
-app.get('/', (req, res) => {
-    res.send('API is Running...')
-})
+
 
 
 
@@ -60,7 +58,6 @@ app.post("/api/payment/create-payment-intent", async (req, res) => {
                 enabled: true
             }
         });
-        console.log(paymentIntent);
 
         res.send({ clientSecret: paymentIntent.client_secret })
     } catch (e) {
@@ -70,7 +67,20 @@ app.post("/api/payment/create-payment-intent", async (req, res) => {
             }
         })
     }
-})
+});
+
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.join(__dirname, '/frontend/build')));
+
+    app.get('*', (req, res) =>
+        res.sendFile(path.resolve(__dirname, 'frontend', 'dist', 'index.html')))
+} else {
+    app.get('/', (req, res) => {
+        res.send('API is Running...')
+    });
+}
+
+
 app.use(notFound);
 app.use(errorHandler);
 

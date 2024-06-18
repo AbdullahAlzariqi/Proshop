@@ -10,9 +10,10 @@
     "client": "npm run dev --prefix frontend",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "data:import": "node backend/seeder.js -i",
-    "data:destroy": "node backend/seeder.js -d"
+    "data:destroy": "node backend/seeder.js -d",
+    "build": "npm install && npm install --prefix frontend && npm run build --prefix frontend"
   },
-  "author": "",
+  "author": "Abdullah Alzariqi",
   "license": "MIT",
   "dependencies": {
     "@stripe/stripe-js": "^3.3.0",
